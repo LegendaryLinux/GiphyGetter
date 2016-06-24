@@ -40,15 +40,15 @@ class GiphyGetter{
 
 	/**
 	 * GiphyGetter constructor.
-	 * @param string $tempDirectory
 	 * @param string|null $apiKey
+	 * @param string|null $tempDirectory
 	 */
-	public function __construct(string $tempDirectory, string $apiKey = null){
-		# Set the temp directory
-		$this->tempDirectory = $tempDirectory;
-
+	public function __construct(string $apiKey = null, string $tempDirectory = null){
 		# Allow the user to define their own API_KEY
 		if($apiKey) $this->API_KEY = $apiKey;
+
+		# Set the temp directory, if provided
+		if($tempDirectory) $this->tempDirectory = $tempDirectory;
 
 		# Create the cURL handler to be used when making API requests
 		$this->curl = curl_init();
@@ -70,18 +70,20 @@ class GiphyGetter{
 	/**
 	 * Send a cURL call to the Giphy API and get the direct download URL for the requested gif
 	 * @param string $search
+	 * @param bool $random
 	 * @return string || bool
 	 */
-	protected function findGifUrl(string $search){
+	protected function findGifUrl(string $search, bool $random = true){
 		try{
 			curl_setopt_array($this->curl,[
 				CURLOPT_URL => 'http://api.giphy.com/v1/gifs/search?q='.urlencode($search) .
-					'&limit=1&api_key='.$this->apiKey,
+					'&api_key='.$this->apiKey,
 				CURLOPT_CUSTOMREQUEST => 'GET',
 				CURLOPT_RETURNTRANSFER => true,
 			]);
 			$response = json_decode(curl_exec($this->curl),true);
-			return $response['data'][0]['images'][$this->imageSize]['url'] ?? false;
+			$img = $random ? mt_rand(0,count($response['data'])-1) : 0;
+			return $response['data'][$img]['images'][$this->imageSize]['url'] ?? false;
 		}catch(Throwable $E){
 			$this->fail($E);
 			return false;
@@ -115,14 +117,22 @@ class GiphyGetter{
 
 	/**
 	 * Search for and deliver a gif to the user 
-	 * @param string $search
-	 * @param bool $forceDownload
+	 * @param string $search They keyword used to search for a gif
+	 * @param bool $forceDownload If true, forces a download with Content-Disposition: attachment
+	 * @param bool $random If false, tends to return the same gif for a given keyword
 	 * @return bool
 	 */
-	public function requestGif(string $search, bool $forceDownload = false){
+	public function requestGif(string $search, bool $forceDownload = false, bool $random = true){
 		try{
+			if(!$this->tempDirectory){
+				header('Content-Type: application/json');
+				print json_encode(['error' => 'Unable to store local file. No temp directory was provided.']);
+				http_response_code(400);
+				return false;
+			}
+
 			# If no image can be found, send a 404
-			if(!$gifUrl = $this->findGifUrl($search)){
+			if(!$gifUrl = $this->findGifUrl($search, $random)){
 				http_response_code(404);
 				return false;
 			}
@@ -153,6 +163,16 @@ class GiphyGetter{
 			http_response_code(500);
 			return false;
 		}
+	}
+
+	/**
+	 * Returns a URL of a gif from Giphy
+	 * @param string $search They keyword to use when searching for a gif
+	 * @param bool $random If false, tends to return the same image for multiple requests
+	 * @return string || bool
+	 */
+	public function requestGifUrl(string $search, bool $random = true){
+		return $this->findGifUrl($search, $random);
 	}
 
 	/**
