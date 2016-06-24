@@ -10,7 +10,7 @@ if(!isset($_GET['gif'])){
 $random = isset($_GET['random']);
 $forceDownload = isset($_GET['forceDownload']);
 
-$giphy = new GiphyGetter(__DIR__.'/temp');
+$giphy = new GiphyGetter(null, __DIR__.'/temp');
 
 if(isset($_GET['urlOnly'])){
 	print $giphy->requestGifUrl($_GET['gif'],$random);
