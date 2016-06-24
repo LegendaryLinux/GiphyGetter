@@ -7,5 +7,13 @@ if(!isset($_GET['gif'])){
 	exit(0);
 }
 
-$giphy = new GiphyGetter(__DIR__.'/temp'); // SET ME TO A DIRECTORY WITH R/W PERMISSIONS
-$giphy->requestGif($_GET['gif'],false); // TRUE TO FORCE A DOWNLOAD
+$random = isset($_GET['random']);
+$forceDownload = isset($_GET['forceDownload']);
+
+$giphy = new GiphyGetter(__DIR__.'/temp');
+
+if(isset($_GET['urlOnly'])){
+	print $giphy->requestGifUrl($_GET['gif'],$random);
+}else{
+	$giphy->requestGif($_GET['gif'],$forceDownload,$random);
+}
