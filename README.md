@@ -8,15 +8,15 @@ force a download, just display it as a normal image, or simply return the image 
 Anywhere you want a user to be able to type a keyword and get a gif in return. An ajax implementation should be fairly
 simple to throw together.
 
+GiphyGetter is already set up for Slack!  
+<a href="https://slack.com/oauth/authorize?scope=incoming-webhook,commands&client_id=3719735657.57893653188"><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
+
 ### How do I use it?
 The constructor accepts two optional parameters. The first is `accessToken`. Giphy has an API which this class
 utilizes, and they ask that you don't make tons of requests with their demo token, which this class includes by
 default. You can get a Giphy API token here: http://api.giphy.com/submit. The second parameter is `tempDirectory`.
 Here, GiphyGetter will store files locally while it transfers them to the user. If you are only using GiphyGetter
 to find URLs, you do not need to provide a temp directory.
-
-GiphyGetter is already set up for Slack!  
-<a href="https://slack.com/oauth/authorize?scope=incoming-webhook,commands&client_id=3719735657.57893653188"><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
 
 ### Code examples:
 ```
