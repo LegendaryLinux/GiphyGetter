@@ -15,6 +15,9 @@ default. You can get a Giphy API token here: http://api.giphy.com/submit. The se
 Here, GiphyGetter will store files locally while it transfers them to the user. If you are only using GiphyGetter
 to find URLs, you do not need to provide a temp directory.
 
+GiphyGetter is already set up for Slack!  
+<a href="https://slack.com/oauth/authorize?scope=incoming-webhook,commands&client_id=3719735657.57893653188"><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
+
 ### Code examples:
 ```
 // Require the file
